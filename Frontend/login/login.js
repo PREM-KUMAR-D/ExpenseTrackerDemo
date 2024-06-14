@@ -17,7 +17,11 @@ function formOnSubmit(event){
         email:email,
         password:password
     })
-    .then(data => console.log(data))
+    .then(data => {
+        console.log(data);
+        window.location = '../expense/expense.html';
+
+    })
     .catch(err => {
         alert(err.response.data.error);
     })

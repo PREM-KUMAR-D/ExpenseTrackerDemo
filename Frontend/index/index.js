@@ -1,5 +1,5 @@
 const form = document.getElementsByTagName('form')[0];
-const loginButton = document.querySelector('#login');
+
 
 
 form.addEventListener('submit',formOnSubmit);
@@ -24,7 +24,5 @@ function formOnSubmit(event){
 
 }
 
-function loginPressed(){
-    window.location.href = 'login.html';
-}
+
 
