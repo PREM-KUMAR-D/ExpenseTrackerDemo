@@ -1,0 +1,16 @@
+body {
+    margin-top: 40px;
+    /* This margin just makes the text easier to read. You can remove it if you want since it can mess with your other styles. */
+}
+
+
+
+/* This box class is purely used for explaining how the bootstrap grid system works. */
+.box {
+    background-color: lightblue;
+    border: 1px solid blue;
+    min-height: 50px;
+    font-size: 2rem;
+}
+
+
