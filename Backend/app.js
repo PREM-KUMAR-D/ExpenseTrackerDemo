@@ -17,8 +17,8 @@ app.use(bodyParser.json());
 app.use('/user',userRoute);
 
 database
-// .sync()
-.sync({force:true});
+.sync()
+// .sync({force:true});
 
 
 
