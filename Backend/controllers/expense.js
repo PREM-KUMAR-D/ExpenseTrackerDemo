@@ -1,4 +1,4 @@
-const { where } = require('sequelize');
+
 const Expense = require('../models/expense');
 
 const uuid = require('uuid');

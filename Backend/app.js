@@ -8,8 +8,10 @@ const cors = require('cors');
 const database = require('./util/database');
 const userModel = require('./models/user');
 const  expenseModel = require('./models/expense');
+const orderModel = require('./models/order');
 const userRoute = require('./routes/user');
 const expenseRoute = require('./routes/expense');
+const purchaseRoute = require('./routes/purchase');
 
 const app = express();
 
@@ -22,17 +24,22 @@ app.use('/user',userRoute);
 
 app.use('/expense',expenseRoute);
 
+app.use('/purchase',purchaseRoute);
+
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);
+
+userModel.hasMany(orderModel);
+orderModel.belongsTo(userModel);
 
 
 database
 .sync()
+// .sync({force:true})
 .then(()=>{
     
     app.listen(process.env.PORT);
 })
 .catch(err => console.log(err));
-// .sync({force:true});
 
 
