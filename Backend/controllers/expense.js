@@ -1,9 +1,18 @@
+const { where } = require('sequelize');
 const Expense = require('../models/expense');
 
 const uuid = require('uuid');
 
 exports.getExpenses = (req,res,next)=>{
-    Expense.findAll()
+
+
+    const userId = req.user.userId;
+
+    Expense.findAll({
+        where:{
+            userUserId: userId
+        }
+    })
     .then(expense =>{
         
         res.status(200).json(expense);
@@ -18,17 +27,27 @@ exports.addExpense = (req,res,next)=>{
     const expense = req.body.expense;
     const description = req.body.description;
     const category = req.body.category;
-    const id = uuid.v4();
+    
+    const userId = req.user.userId;
 
-    const data = Expense.create({id: id,expense:expense,description:description,category:category});
+    const data = Expense.create({expense:expense,description:description,category:category , userUserId:userId})
+    .catch( err => console.log(err));
 
-    res.status(201).json(id);
+    res.status(201).json({
+        message:"success",
+        success: true
+    });
 }
 
 exports.deleteExpense =(req,res,next)=>{
     
     const id = req.params.id;
-    Expense.findByPk(id)
+    const userId = req.user.userId;
+    Expense.findByPk(id , {
+        where: {
+            userUserId : userId
+        }
+    })
     .then( expense =>{
         expense.destroy()
     })

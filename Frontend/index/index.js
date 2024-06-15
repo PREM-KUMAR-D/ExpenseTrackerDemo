@@ -20,6 +20,7 @@ function formOnSubmit(event){
     })
     .then(data => {
         console.log(data);
+        localStorage.setItem('token',data.data.token)
         windowOut.location = '../login/login.html';
     })
     .catch(err => {

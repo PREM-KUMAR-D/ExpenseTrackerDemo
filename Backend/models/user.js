@@ -3,9 +3,15 @@ const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 
 const User = sequelize.define('users',{
+    userId: {
+        type: Sequelize.BIGINT,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+    },
     email : {
         type: Sequelize.STRING,
-        primaryKey: true,
+        unique: true,
         allowNull: false
     },
     name: Sequelize.TEXT,

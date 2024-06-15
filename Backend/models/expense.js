@@ -4,8 +4,9 @@ const sequelize = require('../util/database');
 
 const Expense = sequelize.define('expense',{
     id: { 
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true
     },
     expense: Sequelize.BIGINT,

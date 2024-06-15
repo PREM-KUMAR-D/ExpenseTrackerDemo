@@ -7,8 +7,8 @@ const listGroup = document.querySelector('.list-group');
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-    
-    axios.get('http://localhost:4000/expense/get-expenses')
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:4000/expense/get-expenses',{headers: {"Authorization":token} })
     .then( expenses =>{
         // console.log(expenses.data);
         showItems(expenses.data);
@@ -24,15 +24,14 @@ form.addEventListener('submit', (event) => {
     const expense = expenseInput.value;
     const description = descriptionInput.value;
     const category = categorySelect.value;
-
-
+    const token = localStorage.getItem('token');
     
     const expenseData = { expense, description, category };
 
     // localStorage.setItem(id, JSON.stringify(expenseData));
 
     
-    axios.post('http://localhost:4000/expense/add-expense',expenseData)
+    axios.post('http://localhost:4000/expense/add-expense',expenseData ,{headers: {"Authorization":token} })
     .then( id =>{
         
         const listItem = document.createElement('li');
@@ -64,13 +63,13 @@ form.addEventListener('submit', (event) => {
             expenseInput.value = expense;
             descriptionInput.value = description;
             categorySelect.value = category;
-            axios.get(`http://localhost:4000/expense/delete/${id.data}`);
+            axios.delete(`http://localhost:4000/expense/delete/${id.data}`,{headers: {"Authorization":token} });
             listGroup.removeChild(listItem);
         });
     
         deleteButton.addEventListener('click', () => {
 
-            axios.get(`http://localhost:4000/expense/delete/${id.data}`);
+            axios.delete(`http://localhost:4000/expense/delete/${id.data}`,{headers: {"Authorization":token} });
             listGroup.removeChild(listItem);
         })
         
@@ -96,6 +95,8 @@ function showItems(items) {
         const description = item.description;
         const category = item.category;
         const id = item.id;
+
+        const token = localStorage.getItem('token');
 
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
@@ -126,12 +127,12 @@ function showItems(items) {
             expenseInput.value = expense;
             descriptionInput.value = description;
             categorySelect.value = category;
-            axios.get(`http://localhost:4000/expense/delete/${id}`);
+            axios.delete(`http://localhost:4000/expense/delete/${id}`,{headers: {"Authorization":token} });
             listGroup.removeChild(listItem);
         });
 
         deleteButton.addEventListener('click', () => {
-            axios.get(`http://localhost:4000/expense/delete/${id}`);
+            axios.delete(`http://localhost:4000/expense/delete/${id}`,{headers: {"Authorization":token} });
             listGroup.removeChild(listItem);
         });
 
