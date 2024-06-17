@@ -11,8 +11,8 @@
         crossorigin="anonymous"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    <title>Login</title>
-    <script defer src="login.js"></script>
+    <title>Contact-Us</title>
+    <script defer src="contact.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
 
 </head>
@@ -24,7 +24,7 @@
     <nav class="main-header__nav">
         <ul class="main-header__item-list">
             <li class="main-header__item">
-                <a class="active" href="./login.html">Login</a>
+                <a class="active" href="../login/login.html">Login</a>
             </li>
             <li class="main-header__item">
                 <a class="active" href="../index/register.html">Register</a>
@@ -33,7 +33,7 @@
                 <a class="active" href="/cart">Logout</a>
             </li> -->
             <li class="main-header__item">
-                <a class="active" href="../contact/contact-us.html">Contact-Us</a>
+                <a class="active" href="./contact-us.html">Contact-Us</a>
             </li>
 
         </ul>
@@ -46,24 +46,26 @@
 
     <div class="container">
 
-        <form>
-            <label for="email" class="form-label">Enter your Email:</label>
-            <input type="email" id="email" required class="form-control form-control-sm">
-            <label for="password" class="form-label">Enter your Password:</label>
-            <input type="password" id="password" required class="form-control form-control-sm">
-
-            <br>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <br><br>
-
-
+        <h1>Contact us</h1>
+        <!-- <p> Name and Email</p> -->
+        <form class="product-form" >
+            <div class="form-control">
+                <label for="title" class="form-label">Name</label>
+                <input type="text" name="Name" id="title" class="form-control form-control-sm" required>
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" id="email" class="form-control form-control-sm" required>
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" name="phone" id="phone" class="form-control form-control-sm" required>
+                <label for="message" class="form-label">Message</label>
+                <input type="text" name="message" id="message" value="Message..." class="form-control form-control-sm" required>
+    
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Details</button>
         </form>
 
-        <button type="click" class="btn btn-secondary"><a href="../index/register.html" class="text-warning">Register /
-                Signup </a></button>
-    </div>
 
-    <div class="container">
+
+    
     </div>
 
 

@@ -58,6 +58,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const token = localStorage.getItem('token');
         const isPremium = localStorage.getItem(token);
+ 
+
         if (isPremium === 'premium') {
             addLeaderBoardButton();
 

@@ -5,6 +5,25 @@ const form = document.getElementsByTagName('form')[0];
 form.addEventListener('submit', formOnSubmit);
 
 
+document.addEventListener("DOMContentLoaded", function() {
+    
+    const currentPath = window.location.pathname;
+
+    
+    const navLinks = document.querySelectorAll(".main-header__item-list a");
+
+    
+    navLinks.forEach(link => {
+        if (link.pathname === currentPath) {
+            link.classList.add("active"); 
+        } else {
+            link.classList.remove("active");
+        }
+    });
+});
+
+
+
 
 async function formOnSubmit(event) {
     event.preventDefault();
