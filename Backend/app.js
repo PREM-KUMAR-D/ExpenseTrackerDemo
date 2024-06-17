@@ -37,8 +37,8 @@ orderModel.belongsTo(userModel);
 
 
 database
-.sync()
-// .sync({force:true})
+// .sync()
+.sync({force:true})
 .then(()=>{
     
     app.listen(process.env.PORT);

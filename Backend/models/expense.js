@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const Expense = sequelize.define('expense',{
+const Expense = sequelize.define('expenses',{
     id: { 
         type: Sequelize.BIGINT,
         allowNull: false,
