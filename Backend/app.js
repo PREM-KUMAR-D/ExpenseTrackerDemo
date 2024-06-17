@@ -1,5 +1,5 @@
 
-require('dotenv').config({path:'./Backend/.env' , override:true });
+require('dotenv').config({ path: './Backend/.env', override: true });
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,7 +7,7 @@ const cors = require('cors');
 
 const database = require('./util/database');
 const userModel = require('./models/user');
-const  expenseModel = require('./models/expense');
+const expenseModel = require('./models/expense');
 const orderModel = require('./models/order');
 const userRoute = require('./routes/user');
 const expenseRoute = require('./routes/expense');
@@ -21,13 +21,13 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.use('/user',userRoute);
+app.use('/user', userRoute);
 
-app.use('/expense',expenseRoute);
+app.use('/expense', expenseRoute);
 
-app.use('/purchase',purchaseRoute);
+app.use('/purchase', purchaseRoute);
 
-app.use('/premium',premiumRoute);
+app.use('/premium', premiumRoute);
 
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);
@@ -37,12 +37,12 @@ orderModel.belongsTo(userModel);
 
 
 database
-// .sync()
-.sync({force:true})
-.then(()=>{
-    
-    app.listen(process.env.PORT);
-})
-.catch(err => console.log(err));
+    .sync()
+    // .sync({ force: true })
+    .then(() => {
+
+        app.listen(process.env.PORT);
+    })
+    .catch(err => console.log(err));
 
 

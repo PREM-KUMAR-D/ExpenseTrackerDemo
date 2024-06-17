@@ -7,7 +7,7 @@ const razorPayButton = document.querySelector('#rzp-button');
 const premiumDiv = document.querySelector('#premium');
 
 
-function addLeaderBoardButton(){
+function addLeaderBoardButton() {
     const button = premiumDiv.querySelector('#rzp-button');
     button.style.display = 'none';
     premiumDiv.innerHTML = 'You are a premium user now';
@@ -17,50 +17,62 @@ function addLeaderBoardButton(){
     leaderBoardButton.textContent = 'Show LeaderBoard';
     premiumDiv.appendChild(leaderBoardButton);
 
-    leaderBoardButton.addEventListener('click' , async ()=>{
-        const divLeaderBoard = document.querySelector('#leaderboard');
-        const ul = document.createElement('ul');
-        const token = localStorage.getItem('token');
+    leaderBoardButton.addEventListener('click', async () => {
 
-        const data = await axios.get('http://localhost:4000/premium/show-leader-board',{ headers: { "Authorization": token } });
-        const p = document.createElement('p');
-        const br = document.createElement('br');
-        p.innerHTML = '<h1> Leader Board </h1>';
-        divLeaderBoard.appendChild(br);
-        divLeaderBoard.appendChild(p);
-        divLeaderBoard.appendChild(br);
-        for(d of data.data){
-            
-            ul.innerHTML += `<li>Name -${d.name} Total Expenses: -${d.totalExpense} </li>`;
-            
+        try {
+            const divLeaderBoard = document.querySelector('#leaderboard');
+            const ul = document.createElement('ul');
+            const token = localStorage.getItem('token');
+
+            const data = await axios.get('http://localhost:4000/premium/show-leader-board', { headers: { "Authorization": token } });
+            const p = document.createElement('p');
+            const br = document.createElement('br');
+            p.innerHTML = '<h1> Leader Board </h1>';
+            divLeaderBoard.appendChild(br);
+            divLeaderBoard.appendChild(p);
+            divLeaderBoard.appendChild(br);
+            for (d of data.data) {
+                ul.innerHTML += `<li>Name -${d.name} Total Expenses: -${d.totalExpense} </li>`;
+            }
+            divLeaderBoard.appendChild(ul);
+
+        } catch (error) {
+
+            console.log(error);
+            throw new Error(error);
 
         }
-        divLeaderBoard.appendChild(ul);
+
 
     })
-    
-    
+
+
 
 }
 
 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-    const token = localStorage.getItem('token');
-    const isPremium = localStorage.getItem(token);
-    if(isPremium === 'premium'){
-        addLeaderBoardButton();
-        
+    try {
+
+        const token = localStorage.getItem('token');
+        const isPremium = localStorage.getItem(token);
+        if (isPremium === 'premium') {
+            addLeaderBoardButton();
+
+        }
+        form.style.display = 'block';
+
+        const expenses = await axios.get('http://localhost:4000/expense/get-expenses', { headers: { "Authorization": token } });
+        showItems(expenses.data);
+
+    } catch (error) {
+        console.log(error);
     }
-    form.style.display = 'block';
 
-    axios.get('http://localhost:4000/expense/get-expenses', { headers: { "Authorization": token } })
-        .then(expenses => {
-            // console.log(expenses.data);
-            showItems(expenses.data);
-        })
-        .catch(err => console.log(err));
+
+
 });
 
 
@@ -88,11 +100,11 @@ razorPayButton.addEventListener('click', async (e) => {
                         order_id: options.order_id,
                         payment_id: response.razorpay_payment_id,
                     }, { headers: { "Authorization": token } });
-                    
+
                 } catch (error) {
                     console.log(error);
                 }
-                localStorage.setItem(token,"premium");
+                localStorage.setItem(token, "premium");
                 addLeaderBoardButton();
 
 
@@ -110,7 +122,7 @@ razorPayButton.addEventListener('click', async (e) => {
             alert('Something went wrong');
         })
     }
-    catch(err){
+    catch (err) {
         console.log(err);
     }
 
@@ -120,7 +132,7 @@ razorPayButton.addEventListener('click', async (e) => {
 
 
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const expense = expenseInput.value;
@@ -130,60 +142,58 @@ form.addEventListener('submit', (event) => {
 
     const expenseData = { expense, description, category };
 
-    // localStorage.setItem(id, JSON.stringify(expenseData));
+    try {
 
+        const id = axios.post('http://localhost:4000/expense/add-expense', expenseData, { headers: { "Authorization": token } });
+        form.style.display = 'block';
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
 
-    axios.post('http://localhost:4000/expense/add-expense', expenseData, { headers: { "Authorization": token } })
-        .then(id => {
-            form.style.display = 'block';
-            const listItem = document.createElement('li');
-            listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+        const itemText = document.createElement('p');
+        itemText.textContent = `${category}: ${expense} - ${description}`;
 
-            const itemText = document.createElement('p');
-            itemText.textContent = `${category}: ${expense} - ${description}`;
+        const buttonGroup = document.createElement('div');
 
-            const buttonGroup = document.createElement('div');
+        const editButton = document.createElement('button');
+        editButton.className = 'btn btn-warning btn-sm me-2';
+        editButton.textContent = 'Edit';
 
-            const editButton = document.createElement('button');
-            editButton.className = 'btn btn-warning btn-sm me-2';
-            editButton.textContent = 'Edit';
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-danger btn-sm';
+        deleteButton.textContent = 'Delete';
 
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.textContent = 'Delete';
+        buttonGroup.appendChild(editButton);
+        buttonGroup.appendChild(deleteButton);
+        listItem.appendChild(itemText);
+        listItem.appendChild(buttonGroup);
 
-            buttonGroup.appendChild(editButton);
-            buttonGroup.appendChild(deleteButton);
-            listItem.appendChild(itemText);
-            listItem.appendChild(buttonGroup);
-
-            listGroup.appendChild(listItem);
+        listGroup.appendChild(listItem);
 
 
 
-            editButton.addEventListener('click', () => {
-                expenseInput.value = expense;
-                descriptionInput.value = description;
-                categorySelect.value = category;
-                axios.delete(`http://localhost:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
-                listGroup.removeChild(listItem);
-            });
+        editButton.addEventListener('click', () => {
+            expenseInput.value = expense;
+            descriptionInput.value = description;
+            categorySelect.value = category;
+            axios.delete(`http://localhost:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
+            listGroup.removeChild(listItem);
+        });
 
-            deleteButton.addEventListener('click', () => {
+        deleteButton.addEventListener('click', () => {
 
-                axios.delete(`http://localhost:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
-                listGroup.removeChild(listItem);
-            })
-
-
-            expenseInput.value = '';
-            descriptionInput.value = '';
-            categorySelect.value = '';
+            axios.delete(`http://localhost:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
+            listGroup.removeChild(listItem);
         })
-        .catch(err => console.log(err));
 
 
+        expenseInput.value = '';
+        descriptionInput.value = '';
+        categorySelect.value = '';
+    } catch (error) {
 
+        console.log(error);
+
+    }
 
 });
 

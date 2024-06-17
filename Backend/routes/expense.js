@@ -8,11 +8,11 @@ const router = express.Router();
 
 
 
-router.get('/get-expenses',userAuth,expenseController.getExpenses);
+router.get('/get-expenses', userAuth, expenseController.getExpenses);
 
-router.post('/add-expense',userAuth,expenseController.addExpense);
+router.post('/add-expense', userAuth, expenseController.addExpense);
 
-router.delete('/delete/:id',userAuth,expenseController.deleteExpense);
+router.delete('/delete/:id', userAuth, expenseController.deleteExpense);
 
 
 

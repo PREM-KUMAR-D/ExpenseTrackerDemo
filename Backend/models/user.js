@@ -2,14 +2,14 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const User = sequelize.define('users',{
+const User = sequelize.define('users', {
     userId: {
         type: Sequelize.BIGINT,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true
     },
-    email : {
+    email: {
         type: Sequelize.STRING,
         unique: true,
         allowNull: false
