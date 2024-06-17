@@ -1,5 +1,6 @@
 
 const Expense = require('../models/expense');
+const User = require('../models/user');
 
 const uuid = require('uuid');
 
@@ -31,12 +32,36 @@ exports.addExpense = (req,res,next)=>{
     const userId = req.user.userId;
 
     const data = Expense.create({expense:expense,description:description,category:category , userUserId:userId})
-    .catch( err => console.log(err));
+    .then(expense=> {
+        const totalExpense = Number(req.user.totalExpense) + Number(req.body.expense);
 
-    res.status(201).json({
-        message:"success",
-        success: true
+        User.update({
+            totalExpense: totalExpense
+        },{
+            where: { userId: req.user.userId}
+        })
+        .then(async() =>{
+            res.status(201).json({
+                message:"success",
+                success: true
+            });
+        })
+        .catch( async (err)=>{
+            return   res.status(500).json({
+                message:"failure",
+                success: false
+            });
+        })
+    })
+    .catch( err => {
+        
+        console.log(err)
+        return res.status(500).json({
+            message:"failure",
+            success: false
+        });
     });
+
 }
 
 exports.deleteExpense =(req,res,next)=>{

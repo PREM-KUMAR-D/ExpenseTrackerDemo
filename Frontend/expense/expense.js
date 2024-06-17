@@ -31,7 +31,7 @@ function addLeaderBoardButton(){
         divLeaderBoard.appendChild(br);
         for(d of data.data){
             
-            ul.innerHTML += `<li>Name -${d.name} Total Expenses: -${d.total_cost} </li>`;
+            ul.innerHTML += `<li>Name -${d.name} Total Expenses: -${d.totalExpense} </li>`;
             
 
         }
