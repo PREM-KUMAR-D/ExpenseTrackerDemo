@@ -4,19 +4,70 @@ const descriptionInput = document.getElementById('decription');
 const categorySelect = document.getElementById('select');
 const listGroup = document.querySelector('.list-group');
 const razorPayButton = document.querySelector('#rzp-button');
+const premiumDiv = document.querySelector('#premium');
+
+
+function addLeaderBoardButton(){
+    const button = premiumDiv.querySelector('#rzp-button');
+    button.style.display = 'none';
+    premiumDiv.innerHTML = 'You are a premium user now';
+    const leaderBoardButton = document.createElement('button');
+    leaderBoardButton.className = 'btn btn-warning btn-sm me-2';
+    leaderBoardButton.id = 'leaderboard-button';
+    leaderBoardButton.textContent = 'Show LeaderBoard';
+    premiumDiv.appendChild(leaderBoardButton);
+
+    leaderBoardButton.addEventListener('click' , async ()=>{
+        const divLeaderBoard = document.querySelector('#leaderboard');
+        const ul = document.createElement('ul');
+        const token = localStorage.getItem('token');
+
+        const data = await axios.get('http://localhost:4000/premium/show-leader-board',{ headers: { "Authorization": token } });
+        const p = document.createElement('p');
+        const br = document.createElement('br');
+        p.innerHTML = '<h1> Leader Board </h1>';
+        divLeaderBoard.appendChild(br);
+        divLeaderBoard.appendChild(p);
+        divLeaderBoard.appendChild(br);
+        for(d of data.data){
+            
+            ul.innerHTML += `<li>Name -${d.name} Total Expenses: -${d.total_cost} </li>`;
+            
+
+        }
+        divLeaderBoard.appendChild(ul);
+
+    })
+    
+    
+
+}
 
 
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const token = localStorage.getItem('token');
+    const isPremium = localStorage.getItem(token);
+    if(isPremium === 'premium'){
+        addLeaderBoardButton();
+        
+    }
+    form.style.display = 'block';
+
     axios.get('http://localhost:4000/expense/get-expenses', { headers: { "Authorization": token } })
         .then(expenses => {
             // console.log(expenses.data);
             showItems(expenses.data);
         })
         .catch(err => console.log(err));
-})
+});
+
+
+
+
+
+
 
 
 razorPayButton.addEventListener('click', async (e) => {
@@ -33,7 +84,7 @@ razorPayButton.addEventListener('click', async (e) => {
             "handler": async function (response) {
 
                 try {
-                    await axios.post('http://localhost:3000/purchase/update-transaction-status', {
+                    await axios.post('http://localhost:4000/purchase/update-transaction-status', {
                         order_id: options.order_id,
                         payment_id: response.razorpay_payment_id,
                     }, { headers: { "Authorization": token } });
@@ -41,6 +92,10 @@ razorPayButton.addEventListener('click', async (e) => {
                 } catch (error) {
                     console.log(error);
                 }
+                localStorage.setItem(token,"premium");
+                addLeaderBoardButton();
+
+
 
                 alert('You are a Premium User Now !!');
             }
@@ -80,7 +135,7 @@ form.addEventListener('submit', (event) => {
 
     axios.post('http://localhost:4000/expense/add-expense', expenseData, { headers: { "Authorization": token } })
         .then(id => {
-
+            form.style.display = 'block';
             const listItem = document.createElement('li');
             listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
 

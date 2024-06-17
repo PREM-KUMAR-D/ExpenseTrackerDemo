@@ -1,6 +1,6 @@
 const razorpay = require('razorpay');
 const Order = require('../models/order');
-const { where } = require('sequelize');
+
 
 
 exports.purchasePremium = async (req, res, next) => {
