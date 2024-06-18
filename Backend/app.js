@@ -2,6 +2,7 @@ require('dotenv').config({ path: './Backend/.env', override: true });
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet');
 
 
 const database = require('./util/database');
@@ -18,6 +19,8 @@ const app = express();
 
 
 app.use(cors());
+
+app.user(helmet());
 
 app.use(bodyParser.json());
 
