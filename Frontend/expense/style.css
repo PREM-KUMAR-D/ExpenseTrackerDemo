@@ -214,6 +214,19 @@
       background-color: #00695c;
       color: white;
     }
+
+    #pagination button {
+      margin: 0 5px;
+    }
+
+    #pagination .current-page{
+      width: 100px;
+    }
+
+    #pagination .prev-page, #pagination .next-page{
+      width: 75px;
+    }
+
     
     @media (min-width: 768px) {
       .main-header__nav {

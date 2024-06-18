@@ -11,7 +11,7 @@ const authenticate = async (req, res, next) => {
         if (userRow === null) {
             return res.status(401).json({ succcess: false });
         }
-        req.user = user;
+        req.user = userRow;
         next();
     } catch (error) {
         console.log(error);

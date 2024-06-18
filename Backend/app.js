@@ -12,6 +12,7 @@ const userRoute = require('./routes/user');
 const expenseRoute = require('./routes/expense');
 const purchaseRoute = require('./routes/purchase');
 const premiumRoute = require('./routes/premium');
+const ForgotPassword = require('./models/forgotPassword');
 
 const app = express();
 
@@ -33,6 +34,9 @@ expenseModel.belongsTo(userModel);
 
 userModel.hasMany(orderModel);
 orderModel.belongsTo(userModel);
+
+userModel.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(userModel);
 
 
 database

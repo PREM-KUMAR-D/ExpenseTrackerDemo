@@ -1,10 +1,15 @@
-const form = document.querySelector('form');
+const expenseForm = document.querySelector('form');
 const expenseInput = document.getElementById('expense');
 const descriptionInput = document.getElementById('decription');
 const categorySelect = document.getElementById('select');
 const listGroup = document.querySelector('.list-group');
 const razorPayButton = document.querySelector('#rzp-button');
 const premiumDiv = document.querySelector('#premium');
+const paginationDiv = document.querySelector('#pagination');
+const expensesDiv = document.querySelector('#expenses')
+
+let currentPage = 1;
+const itemsPerPage = 3;
 
 
 function addLeaderBoardButton() {
@@ -15,7 +20,38 @@ function addLeaderBoardButton() {
     leaderBoardButton.className = 'btn btn-warning btn-sm me-2';
     leaderBoardButton.id = 'leaderboard-button';
     leaderBoardButton.textContent = 'Show LeaderBoard';
+
+
+    const downloadButton = document.createElement('button');
+    downloadButton.className = 'btn btn-warning btn-sm me-2';
+    downloadButton.id = 'download-button';
+    downloadButton.textContent = 'Download file';
+
+
+
     premiumDiv.appendChild(leaderBoardButton);
+    premiumDiv.appendChild(downloadButton);
+
+    downloadButton.addEventListener('click', async () => {
+        try {
+
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:4000/user/download', { headers: { "Authorization": token } });
+            if (response.status === 201) {
+                var a = document.createElement('a');
+                a.href = response.data.fileUrl;
+                a.download = 'myexpense.csv';
+                a.click();
+            } else {
+                throw new Error(response.data.message);
+            }
+
+        } catch (error) {
+            alert(error);
+        }
+    })
+
+
 
     leaderBoardButton.addEventListener('click', async () => {
 
@@ -50,6 +86,16 @@ function addLeaderBoardButton() {
 
 }
 
+async function fetchExpenses(page = 1) {
+    try {
+        const token = localStorage.getItem('token');
+        const { data: { expenses, ...pageData } } = await axios.get(`http://localhost:4000/expense/get-expenses?page=${page}`, { headers: { "Authorization": token } });
+        showItems(pageData.data);
+        updatePagination(pageData.lastPage, pageData.currentPage);
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -58,16 +104,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const token = localStorage.getItem('token');
         const isPremium = localStorage.getItem(token);
- 
+        paginationDiv.innerHTML = '';
+
+
 
         if (isPremium === 'premium') {
             addLeaderBoardButton();
 
         }
-        form.style.display = 'block';
-
-        const expenses = await axios.get('http://localhost:4000/expense/get-expenses', { headers: { "Authorization": token } });
-        showItems(expenses.data);
+        expenseForm.style.display = 'block';
+        fetchExpenses(1);
 
     } catch (error) {
         console.log(error);
@@ -134,7 +180,7 @@ razorPayButton.addEventListener('click', async (e) => {
 
 
 
-form.addEventListener('submit', async (event) => {
+expenseForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const expense = expenseInput.value;
@@ -147,12 +193,12 @@ form.addEventListener('submit', async (event) => {
     try {
 
         const id = axios.post('http://localhost:4000/expense/add-expense', expenseData, { headers: { "Authorization": token } });
-        form.style.display = 'block';
+        expenseForm.style.display = 'block';
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
 
         const itemText = document.createElement('p');
-        itemText.textContent = `${category}: ${expense} - ${description}`;
+        itemText.textContent = `${category } - ${expense } - ${description}`;
 
         const buttonGroup = document.createElement('div');
 
@@ -191,6 +237,8 @@ form.addEventListener('submit', async (event) => {
         expenseInput.value = '';
         descriptionInput.value = '';
         categorySelect.value = '';
+
+        fetchExpenses(currentPage);
     } catch (error) {
 
         console.log(error);
@@ -201,6 +249,7 @@ form.addEventListener('submit', async (event) => {
 
 
 function showItems(items) {
+    listGroup.innerHTML = '';
 
     for (item of items) {
 
@@ -216,7 +265,7 @@ function showItems(items) {
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
 
         const itemText = document.createElement('p');
-        itemText.textContent = `${expense}- ${description} - ${category}`;
+        itemText.textContent = `${expense} - ${description} - ${category}`;
 
         const buttonGroup = document.createElement('div');
 
@@ -255,4 +304,40 @@ function showItems(items) {
 
     }
 
+}
+
+
+function updatePagination(totalPages, currentPage) {
+    paginationDiv.innerHTML = '';
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Prev';
+    prevButton.className = 'btn btn-secondary btn-sm me-2 prev-page';
+    prevButton.disabled = Number(currentPage) === 1;
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchExpenses(currentPage);
+        }
+    });
+
+    const currentButton = document.createElement('button');
+    currentButton.textContent = currentPage;
+    currentButton.className = 'btn btn-primary btn-sm me-2 current-page';
+    currentButton.disabled = true;
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.className = 'btn btn-secondary btn-sm me-2 next-page';
+    nextButton.disabled = Number(currentPage) === totalPages;
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            fetchExpenses(currentPage);
+        }
+    });
+
+    paginationDiv.appendChild(prevButton);
+    paginationDiv.appendChild(currentButton);
+    paginationDiv.appendChild(nextButton);
 }
