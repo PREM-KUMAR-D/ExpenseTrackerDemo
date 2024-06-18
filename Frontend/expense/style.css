@@ -109,6 +109,10 @@
       margin: 1rem;
       padding: 0;
     }
+
+    .text-gold{
+      color: #ffd700;
+    }
     
     .mobile-nav__item a {
       text-decoration: none;

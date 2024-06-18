@@ -15,7 +15,11 @@ const itemsPerPage = 3;
 function addLeaderBoardButton() {
     const button = premiumDiv.querySelector('#rzp-button');
     button.style.display = 'none';
-    premiumDiv.innerHTML = 'You are a premium user now';
+    const p = document.createElement('p');
+    p.textContent = ' You are a premium user now ';
+    p.className = 'text-gold'
+
+    premiumDiv.innerHTML = '<p> <b> You are a premium user now  </b> </p>';
     const leaderBoardButton = document.createElement('button');
     leaderBoardButton.className = 'btn btn-warning btn-sm me-2';
     leaderBoardButton.id = 'leaderboard-button';
@@ -56,21 +60,31 @@ function addLeaderBoardButton() {
     leaderBoardButton.addEventListener('click', async () => {
 
         try {
-            const divLeaderBoard = document.querySelector('#leaderboard');
-            const ul = document.createElement('ul');
+            
+
             const token = localStorage.getItem('token');
 
             const data = await axios.get('http://localhost:4000/premium/show-leader-board', { headers: { "Authorization": token } });
             const p = document.createElement('p');
-            const br = document.createElement('br');
-            p.innerHTML = '<h1> Leader Board </h1>';
-            divLeaderBoard.appendChild(br);
-            divLeaderBoard.appendChild(p);
-            divLeaderBoard.appendChild(br);
+            p.innerHTML = '<h5> Leader Board </h5>';
+
+            const leaderboardUl = document.querySelector('#leaderboard-list');
+
+
+
+
             for (d of data.data) {
-                ul.innerHTML += `<li>Name -${d.name} Total Expenses: -${d.totalExpense} </li>`;
+
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                const itemText = document.createElement('p');
+                itemText.innerHTML = `<pre> Name : ${d.name}   Total Expenses  : ${d.totalExpense} </pre>`;
+
+                listItem.appendChild(itemText);
+                leaderboardUl.appendChild(listItem);
             }
-            divLeaderBoard.appendChild(ul);
+
 
         } catch (error) {
 
@@ -150,7 +164,8 @@ razorPayButton.addEventListener('click', async (e) => {
                     }, { headers: { "Authorization": token } });
 
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
+                    throw new Error(error);
                 }
                 localStorage.setItem(token, "premium");
                 addLeaderBoardButton();
@@ -198,7 +213,7 @@ expenseForm.addEventListener('submit', async (event) => {
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
 
         const itemText = document.createElement('p');
-        itemText.textContent = `${category } - ${expense } - ${description}`;
+        itemText.textContent = `${category} - ${expense} - ${description}`;
 
         const buttonGroup = document.createElement('div');
 
