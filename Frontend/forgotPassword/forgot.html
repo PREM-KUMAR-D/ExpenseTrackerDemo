@@ -12,7 +12,7 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <title>Login</title>
-    <script defer src="login.js"></script>
+    <script defer src="forgot.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
 
 </head>
@@ -24,16 +24,16 @@
     <nav class="main-header__nav">
         <ul class="main-header__item-list">
             <li class="main-header__item">
-                <a class="active" href="./login.html">Login</a>
+                <a  href="./login.html">Login</a>
             </li>
             <li class="main-header__item">
-                <a class="active" href="../index/register.html">Register</a>
+                <a  href="../index/register.html">Register</a>
             </li>
             <!-- <li class="main-header__item">
                 <a class="active" href="/cart">Logout</a>
             </li> -->
             <li class="main-header__item">
-                <a class="active" href="../contact/contact-us.html">Contact-Us</a>
+                <a  href="../contact/contact-us.html">Contact-Us</a>
             </li>
 
         </ul>
@@ -43,30 +43,18 @@
 
 
 
+<form class="product-form" >
+    <div class="form-control">
+        
+        <label for="email" class="form-label">Email</label>
+        <input type="email" name="email" id="email" class="form-control form-control-sm" required>
+        
+        
 
-    <div class="container">
-
-        <form>
-            <label for="email" class="form-label">Enter your Email:</label>
-            <input type="email" id="email" required class="form-control form-control-sm">
-            <label for="password" class="form-label">Enter your Password:</label>
-            <input type="password" id="password" required class="form-control form-control-sm">
-
-            <br>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <br><br>
-
-
-        </form>
-
-        <button type="click" class="btn btn-secondary"><a href="../index/register.html" class="text-warning">Register /
-                Signup </a></button>
-        <button type="click" class="btn btn-secondary"><a href="../forgotPassword/forgot.html" class="text-warning">Forgot Password </button>
     </div>
-
-    <div class="container">
-    </div>
-
+    <br>
+    <button type="submit" class="btn btn-primary">Send Reset Link</button>
+</form>
 
 
 </body>
