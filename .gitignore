@@ -2,3 +2,4 @@
 /Backend/package-lock.json
 /Backend/.env
 todo.md
+/Backend/access.log

@@ -3,6 +3,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 
 
 const database = require('./util/database');
@@ -18,9 +21,16 @@ const ForgotPassword = require('./models/forgotPassword');
 const app = express();
 
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname , 'access.log'),{
+    flags:'a' 
+})
+
+
 app.use(cors());
 
-app.user(helmet());
+app.use(helmet());
+
+app.use(morgan('combined' , {stream: accessLogStream}));
 
 app.use(bodyParser.json());
 
