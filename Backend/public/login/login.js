@@ -3,6 +3,8 @@ const form = document.getElementsByTagName('form')[0];
 
 
 form.addEventListener('submit', formOnSubmit);
+const backendHost = 'localhost';
+
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -24,33 +26,27 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-
 async function formOnSubmit(event) {
-    event.preventDefault();
-    const name = event.target.name.value;
-    const email = event.target.email.value;
-    const password = event.target.password.value;
-    const windowOut = window;
-
     try {
+        event.preventDefault();
 
-        const data = await axios.post('http://localhost:4000/user/signup', {
-            name: name,
+        
+
+        const name = event.target.name.value;
+        const email = event.target.email.value;
+        const password = event.target.password.value;
+        const token = localStorage.getItem('token');
+        const data = await axios.post(`http://${backendHost}:4000/user/login`, {
             email: email,
             password: password
-        })
+        }, { headers: { "Authorization": token } });
+
         console.log(data);
-        localStorage.setItem('token', data.data.token)
-        windowOut.location = '../login/login.html';
+
+        window.location = '../expense/expense.html';
 
     } catch (error) {
         console.log(error);
-        alert(error.response.data.error);
+        alert(error);
     }
-
 }
-
-
-
-
-

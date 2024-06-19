@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './Backend/.env', override: true });
+require('dotenv').config({ path: './.env', override: true });
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -41,6 +41,11 @@ app.use('/expense', expenseRoute);
 app.use('/purchase', purchaseRoute);
 
 app.use('/premium', premiumRoute);
+
+app.use((req,res,next)=>{
+
+    res.sendFile(path.join(__dirname , `public/${req.url}`));
+})
 
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);

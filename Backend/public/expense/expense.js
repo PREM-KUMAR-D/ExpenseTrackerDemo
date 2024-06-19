@@ -11,6 +11,8 @@ const expensesDiv = document.querySelector('#expenses')
 let currentPage = 1;
 const itemsPerPage = 3;
 
+const backendHost = 'localhost';
+
 
 function addLeaderBoardButton() {
     const button = premiumDiv.querySelector('#rzp-button');
@@ -40,7 +42,7 @@ function addLeaderBoardButton() {
         try {
 
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:4000/user/download', { headers: { "Authorization": token } });
+            const response = await axios.get(`http://${backendHost}:4000/user/download`, { headers: { "Authorization": token } });
             if (response.status === 201) {
                 var a = document.createElement('a');
                 a.href = response.data.fileUrl;
@@ -64,7 +66,7 @@ function addLeaderBoardButton() {
 
             const token = localStorage.getItem('token');
 
-            const data = await axios.get('http://localhost:4000/premium/show-leader-board', { headers: { "Authorization": token } });
+            const data = await axios.get(`http://${backendHost}:4000/premium/show-leader-board`, { headers: { "Authorization": token } });
             const p = document.createElement('p');
             p.innerHTML = '<h5> Leader Board </h5>';
 
@@ -103,7 +105,7 @@ function addLeaderBoardButton() {
 async function fetchExpenses(page = 1) {
     try {
         const token = localStorage.getItem('token');
-        const { data: { expenses, ...pageData } } = await axios.get(`http://localhost:4000/expense/get-expenses?page=${page}`, { headers: { "Authorization": token } });
+        const { data: { expenses, ...pageData } } = await axios.get(`http://${backendHost}:4000/expense/get-expenses?page=${page}`, { headers: { "Authorization": token } });
         showItems(pageData.data);
         updatePagination(pageData.lastPage, pageData.currentPage);
     } catch (error) {
@@ -149,7 +151,7 @@ razorPayButton.addEventListener('click', async (e) => {
     try {
 
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:4000/purchase/premium-membership', { headers: { "Authorization": token } });
+        const response = await axios.get(`http://${backendHost}:4000/purchase/premium-membership`, { headers: { "Authorization": token } });
         console.log(response);
         var options =
         {
@@ -158,7 +160,7 @@ razorPayButton.addEventListener('click', async (e) => {
             "handler": async function (response) {
 
                 try {
-                    await axios.post('http://localhost:4000/purchase/update-transaction-status', {
+                    await axios.post(`http://${backendHost}:4000/purchase/update-transaction-status`, {
                         order_id: options.order_id,
                         payment_id: response.razorpay_payment_id,
                     }, { headers: { "Authorization": token } });
@@ -207,7 +209,7 @@ expenseForm.addEventListener('submit', async (event) => {
 
     try {
 
-        const id = axios.post('http://localhost:4000/expense/add-expense', expenseData, { headers: { "Authorization": token } });
+        const id = axios.post(`http://${backendHost}:4000/expense/add-expense`, expenseData, { headers: { "Authorization": token } });
         expenseForm.style.display = 'block';
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
@@ -238,13 +240,13 @@ expenseForm.addEventListener('submit', async (event) => {
             expenseInput.value = expense;
             descriptionInput.value = description;
             categorySelect.value = category;
-            axios.delete(`http://localhost:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
+            axios.delete(`http://${backendHost}:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
             listGroup.removeChild(listItem);
         });
 
         deleteButton.addEventListener('click', () => {
 
-            axios.delete(`http://localhost:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
+            axios.delete(`http://${backendHost}:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
             listGroup.removeChild(listItem);
         })
 
@@ -305,12 +307,12 @@ function showItems(items) {
             expenseInput.value = expense;
             descriptionInput.value = description;
             categorySelect.value = category;
-            axios.delete(`http://localhost:4000/expense/delete/${id}`, { headers: { "Authorization": token } });
+            axios.delete(`http://${backendHost}:4000/expense/delete/${id}`, { headers: { "Authorization": token } });
             listGroup.removeChild(listItem);
         });
 
         deleteButton.addEventListener('click', () => {
-            axios.delete(`http://localhost:4000/expense/delete/${id}`, { headers: { "Authorization": token } });
+            axios.delete(`http://${backendHost}:4000/expense/delete/${id}`, { headers: { "Authorization": token } });
             listGroup.removeChild(listItem);
         });
 

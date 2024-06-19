@@ -21,14 +21,15 @@ exports.forgotPassword = async (req, res, next) => {
             await user.createForgotpassword({ id, active: true })
             let apiInstance = new brevo.TransactionalEmailsApi();
             let sendSmtpEmail = new brevo.SendSmtpEmail();
+            const backendHost = process.env.BACKEND_HOST;
 
             sendSmtpEmail.subject = "{{params.subject}}";
-            sendSmtpEmail.htmlContent = "<a href='http://localhost:4000/password/reset-password/{{params.id}}'>Reset password</a>";
+            sendSmtpEmail.htmlContent = "<a href='http://{{params.host}}:4000/password/reset-password/{{params.id}}'>Reset password</a>";
             sendSmtpEmail.sender = { "name": "Admin", "email": "premkumar88845@gmail.com" };
             sendSmtpEmail.to = [
                 { "email": email, "name": "Subscriber" }
             ];
-            sendSmtpEmail.params = { "id": id, "subject": "Password reset link for Expense Tracker", "email": email };
+            sendSmtpEmail.params = { "id": id, "subject": "Password reset link for Expense Tracker", "email": email , "host" : backendHost};
             const returnData = await apiInstance.sendTransacEmail(sendSmtpEmail);
 
             console.log(returnData);
