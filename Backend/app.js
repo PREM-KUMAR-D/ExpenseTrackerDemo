@@ -16,6 +16,7 @@ const userRoute = require('./routes/user');
 const expenseRoute = require('./routes/expense');
 const purchaseRoute = require('./routes/purchase');
 const premiumRoute = require('./routes/premium');
+const forgotPasswordRoute = require('./routes/resetPassword');
 const ForgotPassword = require('./models/forgotPassword');
 
 const app = express();
@@ -28,7 +29,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname , 'access.log')
 
 app.use(cors());
 
-app.use(helmet());
+// app.use(helmet());
 
 app.use(morgan('combined' , {stream: accessLogStream}));
 
@@ -41,6 +42,8 @@ app.use('/expense', expenseRoute);
 app.use('/purchase', purchaseRoute);
 
 app.use('/premium', premiumRoute);
+
+app.use('/password',forgotPasswordRoute);
 
 app.use((req,res,next)=>{
 

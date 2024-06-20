@@ -43,7 +43,7 @@ async function formOnSubmit(event) {
 
         console.log(data);
 
-        window.location = '../expense/expense.html';
+        window.location.href = '../expense/expense.html';
 
     } catch (error) {
         console.log(error);

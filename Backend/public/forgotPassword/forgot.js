@@ -11,7 +11,7 @@ resetForm.addEventListener('submit', async (e)=>{
             email: form.get('email')
         }
     
-        const response = axios.post(`http://${backendHost}:4000/password/forgot-password`,userDetails);
+        const response = await axios.post(`http://${backendHost}:4000/password/forgot-password`,userDetails);
         if (response.status === 202 ){
             alert('Recovery link sent');
     
