@@ -57,11 +57,11 @@ exports.postAddUser = async (req, res, next) => {
 
     } catch (error) {
 
-        console.log(error);
         if (err.toString() === 'SequelizeUniqueConstraintError: Validation error') {
             res.status(403).json({ error: "Email already exists! Please Signup with new email" });
             return;
         }
+        console.log(error);
         return res.status(500).json({ success: false, message: "Something went wrong" });
     }
 
