@@ -4,7 +4,7 @@ const {Parser} = require('json2csv');
 
 const Expense = require('../models/expense');
 const User = require('../models/user');
-const sequelize = require('../util/database');
+
 
 const ITEMS_PER_PAGE = 3;
 
@@ -13,18 +13,18 @@ exports.getExpenses = async (req, res, next) => {
     const { page = 1 } = req.query;
 
 
-    const userId = req.user.userId;
+    const userId = req.user._id;
 
     try {
+        const pageNumber = parseInt(page,10);
 
-        const expenses = await Expense.findAll({
-            where: { userUserId: userId },
-            offset: (page - 1) * ITEMS_PER_PAGE,
-            limit: ITEMS_PER_PAGE
-
-        });
-
-        const totalExpense = await Expense.count({ userUserId: userId });
+        const skip = (pageNumber - 1) * ITEMS_PER_PAGE;
+            
+        const expenses = await Expense.find({ user: userId })
+        .skip(skip)
+        .limit(ITEMS_PER_PAGE);
+                            
+        const totalExpense = await Expense.countDocuments({ user: userId });
 
 
 
@@ -56,27 +56,38 @@ exports.getExpenses = async (req, res, next) => {
 
 exports.addExpense = async (req, res, next) => {
 
-    const t = await sequelize.transaction();
+    
 
     try {
 
         const expense = req.body.expense;
         const description = req.body.description;
         const category = req.body.category;
+        const user = req.user;
+ 
 
-        const userId = req.user.userId;
-        const expenseRow = await Expense.create({ expense: expense, description: description, category: category, userUserId: userId }, { transaction: t });
+        const expenseDoc = new Expense({
+            expense: expense,
+            description: description,
+            category: category,
+            user: user
+        })
+        
 
         const totalExpense = Number(req.user.totalExpense) + Number(req.body.expense);
+        await expenseDoc.save();
+        
 
-        await User.update({ totalExpense: totalExpense }, { where: { userId: req.user.userId }, transaction: t });
+        const updatedUser = await User.findByIdAndUpdate(user._id, {
+            totalExpense: totalExpense
+        })
 
-        await t.commit();
-        return res.status(201).json({ message: "success", success: true });
+        
+        return res.status(201).json({ message: "success", success: true , data: expenseDoc});
 
     }
     catch (err) {
-        await t.rollback();
+        
 
         return res.status(500).json({
             message: "failure",
@@ -91,17 +102,16 @@ exports.addExpense = async (req, res, next) => {
 exports.deleteExpense = async (req, res, next) => {
 
     const id = req.params.id;
-    const userId = req.user.userId;
+    
     if (id === undefined || id.length === 0) {
         return res.status(400).json({ success: false });
     }
 
     try {
-        const expense = await Expense.findByPk(id, { where: { userUserId: userId } });
-        if (expense === null) {
-            return res.status(404).json({ success: false, message: 'Expense does not belong to the user' });
-        }
-        expense.destroy()
+        await Expense.findByIdAndDelete(id);
+
+        
+
         return res.status(200).json({ success: true, message: 'Deleted Succesfully' });
 
     } catch (err) {

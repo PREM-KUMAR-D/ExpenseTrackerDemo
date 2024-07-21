@@ -209,7 +209,7 @@ expenseForm.addEventListener('submit', async (event) => {
 
     try {
 
-        const id = axios.post(`http://${backendHost}:4000/expense/add-expense`, expenseData, { headers: { "Authorization": token } });
+        const id = await axios.post(`http://${backendHost}:4000/expense/add-expense`, expenseData, { headers: { "Authorization": token } });
         expenseForm.style.display = 'block';
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
@@ -240,13 +240,13 @@ expenseForm.addEventListener('submit', async (event) => {
             expenseInput.value = expense;
             descriptionInput.value = description;
             categorySelect.value = category;
-            axios.delete(`http://${backendHost}:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
+            axios.delete(`http://${backendHost}:4000/expense/delete/${id.data.data._id}`, { headers: { "Authorization": token } });
             listGroup.removeChild(listItem);
         });
 
         deleteButton.addEventListener('click', () => {
 
-            axios.delete(`http://${backendHost}:4000/expense/delete/${id.data}`, { headers: { "Authorization": token } });
+            axios.delete(`http://${backendHost}:4000/expense/delete/${id.data.data._id}`, { headers: { "Authorization": token } });
             listGroup.removeChild(listItem);
         })
 
@@ -274,7 +274,7 @@ function showItems(items) {
         const expense = item.expense;
         const description = item.description;
         const category = item.category;
-        const id = item.id;
+        const id = item._id;
 
         const token = localStorage.getItem('token');
 

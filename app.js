@@ -34,7 +34,7 @@ app.use(bodyParser.json());
 
 app.use('/user', userRoute);
 
-// app.use('/expense', expenseRoute);
+app.use('/expense', expenseRoute);
 
 // app.use('/purchase', purchaseRoute);
 

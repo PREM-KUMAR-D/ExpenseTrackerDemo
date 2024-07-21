@@ -6,12 +6,13 @@ const authenticate = async (req, res, next) => {
     try {
         const token = req.header('Authorization');
         const user = jwt.verify(token, process.env.SECRET_KEY);
-        const userRow = await User.findByPk(user.userId);
 
-        if (userRow === null) {
+        const userDoc = await User.findById(user._id);
+
+        if (userDoc === null) {
             return res.status(401).json({ succcess: false });
         }
-        req.user = userRow;
+        req.user = userDoc;
         next();
     } catch (error) {
         console.log(error);
