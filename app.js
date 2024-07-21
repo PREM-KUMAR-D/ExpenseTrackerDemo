@@ -28,7 +28,7 @@ app.use(cors());
 
 // app.use(helmet());
 
-app.use(morgan('combined', { stream: accessLogStream }));
+// app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.json());
 
@@ -38,7 +38,7 @@ app.use('/expense', expenseRoute);
 
 // app.use('/purchase', purchaseRoute);
 
-// app.use('/premium', premiumRoute);
+app.use('/premium', premiumRoute);
 
 app.use('/password', forgotPasswordRoute);
 

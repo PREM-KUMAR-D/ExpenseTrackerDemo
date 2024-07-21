@@ -2,7 +2,7 @@ const razorpay = require('razorpay');
 
 
 const Order = require('../models/order');
-const sequelize = require('../util/database');
+
 
 
 exports.purchasePremium = async (req, res, next) => {
@@ -15,7 +15,13 @@ exports.purchasePremium = async (req, res, next) => {
         const amount = 100;
         const order = await rzp.orders.create({ amount, currency: "INR" });
 
-        await req.user.createOrder({ orderid: order.id, status: 'PENDING' });
+        const newOrder = new Order({
+            orderid: order.id,
+            status: 'PENDING',
+            user: req.user._id 
+        });
+
+        await newOrder.save();
 
         return res.status(201).json({ order, key_id: rzp.key_id });
 
@@ -29,27 +35,27 @@ exports.purchasePremium = async (req, res, next) => {
 }
 
 exports.updateTransactionStatus = async (req, res, next) => {
-    const t = await sequelize.transaction();
+    
     try {
         const payment_id = req.body.payment_id;
         const order_id = req.body.order_id;
-        const order = await Order.findOne({ where: { orderid: order_id } ,transaction: t });
+        const order = await Order.findOne({ orderid: order_id });
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
 
-        const promise1 = order.update({ paymentid: payment_id, status: 'SUCCESSFUL' }, {transaction: t});
-        const promise2 = req.user.update({ isPremium: true }, {transaction: t});
 
-        Promise.all([promise1, promise2]).then(() => {
-            t.commit();
-            return res.status(202).json({ sucess: true, message: " Transaction Successful" });
-        })
-        .catch((err) => {
-                throw new Error(error);
-        })
+        const updateOrder = order.updateOne({ paymentid: payment_id, status: 'SUCCESSFUL' });
+        const updateUser = User.updateOne({ _id: req.user._id }, { isPremium: true });
+
+        await Promise.all([updateOrder, updateUser]);
+
+        return res.status(202).json({ success: true, message: "Transaction Successful" });
 
     }
     catch (err) {
         console.log(err);
-        t.rollback();
+        
         res.status(403).json({ message: "Something went wrong", error: err });
     }
 
