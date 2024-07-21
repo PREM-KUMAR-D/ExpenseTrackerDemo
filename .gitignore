@@ -1,6 +1,6 @@
-/Backend/node_modules/
-/Backend/package-lock.json
-/Backend/.env
+node_modules/
+package-lock.json
+.env
 todo.md
-/Backend/access.log
-/Backend/.env.prod.env
+access.log
+.env.prod.env
