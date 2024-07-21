@@ -39,9 +39,10 @@ async function formOnSubmit(event) {
         const data = await axios.post(`http://${backendHost}:4000/user/login`, {
             email: email,
             password: password
-        }, { headers: { "Authorization": token } });
+        });
 
         console.log(data);
+        localStorage.setItem('token', data.data.token)
 
         window.location.href = '../expense/expense.html';
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/signup', userController.postAddUser);
 
-router.post('/login', userAuth, userController.postLoginUser);
+router.post('/login', userController.postLoginUser);
 
 router.get('/download',userAuth,expenseControlller.downloadExpenses);
 

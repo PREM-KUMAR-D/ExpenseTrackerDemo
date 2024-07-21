@@ -13,6 +13,7 @@ const expenseRoute = require('./routes/expense');
 const purchaseRoute = require('./routes/purchase');
 const premiumRoute = require('./routes/premium');
 const forgotPasswordRoute = require('./routes/resetPassword');
+const userRoute = require('./routes/user');
 
 
 const app = express();
@@ -31,7 +32,7 @@ app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.json());
 
-// app.use('/user', userRoute);
+app.use('/user', userRoute);
 
 // app.use('/expense', expenseRoute);
 
@@ -42,6 +43,7 @@ app.use(bodyParser.json());
 // app.use('/password', forgotPasswordRoute);
 
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>{

@@ -40,12 +40,11 @@ async function formOnSubmit(event) {
             password: password
         })
         console.log(data);
-        localStorage.setItem('token', data.data.token)
         windowOut.location = '../login/login.html';
 
     } catch (error) {
         console.log(error);
-        alert(error.response.data.error);
+        
     }
 
 }

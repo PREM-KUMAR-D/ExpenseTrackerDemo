@@ -1,4 +1,4 @@
-const userModel = require('../models/user');
+const User = require('../models/user');
 
 
 const bcrypt = require('bcrypt');
@@ -18,21 +18,22 @@ exports.postLoginUser = async (req, res, next) => {
 
 
     try {
-        const data =await userModel.findOne({ where: { email: email } });
+        
+        const user =await User.findOne({ email: email });
 
-        if (data === null) {
+        if (!user) {
             res.status(404).json({ error: "No user with this email present please Signup Or use the correct email !" });
             return;
         }
 
-        const resBoolean = await bcrypt.compare(password, data.password)
+        const resBoolean = await bcrypt.compare(password, user.password)
 
         if (!resBoolean) {
             res.status(401).json({ error: "Password Incorrect" });
             return;
         }
 
-        res.status(200).json(data);
+        res.status(200).json({user: user , token:  generateAccessToken(user)});
     } catch (error) {
 
         console.log(error);
@@ -51,13 +52,19 @@ exports.postAddUser = async (req, res, next) => {
 
 
     try {
-        const result = await bcrypt.hash(password, saltRounds)
-        const data = await userModel.create({ name: name, email: email, password: result })
-        res.status(201).json({ message: "Success", data: data, token: generateAccessToken(data) });
+        const result = await bcrypt.hash(password, saltRounds);
+
+        const user = new User({
+            name: name,
+            email: email,
+            password: result
+        })
+        const data = await user.save();
+        res.status(201).json({ message: "Success" });
 
     } catch (error) {
 
-        if (err.toString() === 'SequelizeUniqueConstraintError: Validation error') {
+        if (error.name === 'MongoServerError' && error.code === 11000) {
             res.status(403).json({ error: "Email already exists! Please Signup with new email" });
             return;
         }
