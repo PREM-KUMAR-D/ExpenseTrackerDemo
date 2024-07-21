@@ -40,7 +40,7 @@ app.use('/expense', expenseRoute);
 
 // app.use('/premium', premiumRoute);
 
-// app.use('/password', forgotPasswordRoute);
+app.use('/password', forgotPasswordRoute);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
